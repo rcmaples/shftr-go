@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Input from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+// Icons
+import EditIcon from '@material-ui/icons/EditOutlined';
+import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
+import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
+
+// Inspiration: https://codesandbox.io/s/material-ui-editable-tables-forked-29csr?file=/src/index.js:1794-1845
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+    // marginTop: theme.spacing(3),
+    overflowX: 'auto',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 650,
+  },
+  selectTableCell: {
+    width: 60,
+  },
+  tableCell: {
+    width: 130,
+    height: 40,
+  },
+  input: {
+    width: 130,
+    height: 40,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+}));
+
+const CustomTableCell = ({ row, name, onChange }) => {
+  const classes = useStyles();
+  const { isEditMode } = row;
+  return (
+    <TableCell align='left' className={classes.tableCell}>
+      {isEditMode ? (
+        <Input
+          name={name}
+          value={row[name]}
+          onChange={e => onChange(e, row)}
+          className={classes.input}
+          inputProps={{
+            type: 'number',
+            min: 0,
+            max: 1,
+            step: 0.25,
+          }}
+        />
+      ) : (
+        row[name]
+      )}
+    </TableCell>
+  );
+};
+
+const RulesTable = () => {
+  const classes = useStyles();
+  const [rows, setRows] = useState([]);
+  // const [previous, setPrevious] = React.useState({});
+
+  const updateQueueShare = body => {
+    let options = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    };
+
+    return fetch(`/api/v1/agent/queueshare`, options)
+      .then(response => response.json())
+      .then(({ agent }) => {
+        return agent;
+      })
+      .catch(error => console.error(error));
+  };
+
+  useEffect(() => {
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    fetch(`/api/v1/agent/active`, options)
+      .then(response => response.json())
+      .then(({ agents }) => {
+        if (agents === null) {
+          return;
+        }
+        agents.map(agentRecord => {
+          if (agentRecord.defaultZendeskGroupName === 'Support Engineers') {
+            let newRow = {
+              key: agentRecord.key,
+              name: agentRecord.name,
+              techcheck: agentRecord.queueShare.techcheck,
+              supeng: agentRecord.queueShare.supeng,
+              mobile: agentRecord.queueShare.mobile,
+            };
+            setRows(oldRows => [...oldRows, newRow]);
+          }
+        });
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+  const onToggleEditMode = key => {
+    setRows(state => {
+      return rows.map(row => {
+        if (row.key === key) {
+          return { ...row, isEditMode: !row.isEditMode };
+        }
+        return row;
+      });
+    });
+  };
+
+  const onSaveChanges = async row => {
+    const { key } = row;
+    let updated = await updateQueueShare(row);
+    onToggleEditMode(key);
+  };
+
+  const onChange = (e, row) => {
+    const value = e.target.value;
+    let share = parseFloat(value);
+    if (share == NaN) {
+      console.error('Error creating float value');
+      return;
+    }
+    const name = e.target.name;
+    const { key } = row;
+    const newRows = rows.map(row => {
+      if (row.key === key) {
+        return { ...row, [name]: share };
+      }
+      return row;
+    });
+    setRows(newRows);
+  };
+
+  return (
+    <div className={classes.root}>
+      <TableContainer
+        style={{
+          height: 'fit-content',
+          marginBottom: '10px',
+          overflowY: 'scroll',
+        }}
+      >
+        <Table stickyHeader className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell align='left' />
+              <TableCell align='left'>Agent</TableCell>
+              <TableCell align='left'>Tech Check</TableCell>
+              <TableCell align='left'>Support Engineers</TableCell>
+              <TableCell align='left'>Mobile</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map(row => (
+              <TableRow key={row.key}>
+                <TableCell className={classes.selectTableCell}>
+                  {row.isEditMode ? (
+                    <>
+                      <IconButton
+                        aria-label='done'
+                        onClick={() => onSaveChanges(row)}
+                      >
+                        <DoneIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <IconButton
+                      aria-label='edit'
+                      onClick={() => onToggleEditMode(row.key)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                </TableCell>
+                <TableCell className={classes.tableCell} align='left'>
+                  {row.name}
+                </TableCell>
+                <CustomTableCell {...{ row, name: 'techcheck', onChange }} />
+                <CustomTableCell {...{ row, name: 'supeng', onChange }} />
+                <CustomTableCell {...{ row, name: 'mobile', onChange }} />
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+};
+
+export default RulesTable;
