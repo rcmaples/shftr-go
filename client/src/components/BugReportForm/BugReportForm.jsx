@@ -16,7 +16,7 @@ const useStyles = makeStyles(styles);
 
 import * as FullStory from '@fullstory/browser';
 
-const ZAPHOOK = '***REMOVED***';
+const ZAPHOOK = '**REMOVED**';
 
 const priorityLabels = [
   { value: 'low-priority', name: 'Low Impact/Annoyance', key: 'low-priority' },
