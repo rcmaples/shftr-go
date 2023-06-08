@@ -16,17 +16,17 @@ import (
 	"github.com/stephenafamo/kronika"
 )
 
-var flgWebpack = flag.String("webpack", "http://127.0.0.1:3001", "Upstream webpack server for debug mode. If debug mode is disabled, the assets are provided from local filesystem.")
+// var flgWebpack = flag.String("webpack", "http://127.0.0.1:3001", "Upstream webpack server for debug mode. If debug mode is disabled, the assets are provided from local filesystem.")
+var flgWebpack = flag.String("webpack", "http://127.0.0.1:3000", "Upstream webpack server for debug mode. If debug mode is disabled, the assets are provided from local filesystem.")
 var flgWebroot = flag.String("webroot", "./client/build", "Path to asset root directory for production mode. If debug mode is enabled, the assets are provided via webpack debug server.")
 var flgPort = flag.Int("port", 4000, "Server port to listen on")
 var flgEnv = flag.String("env", "dev", "Appliction environment (dev|prod)")
+
 // var flgDsn = flag.String("dsn", "", "Datastore connection string")
-
-
 
 func main() {
 	flag.Parse()
-	ctx := context.Background();
+	ctx := context.Background()
 
 	services.TestCal()
 
@@ -58,7 +58,7 @@ func main() {
 		}
 	}()
 
-	go func(){
+	go func() {
 		start, err := time.Parse(
 			"2006-01-02 15:04:05",
 			"2021-01-20 14:00:00",

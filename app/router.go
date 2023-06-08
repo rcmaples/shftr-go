@@ -10,8 +10,6 @@ import (
 
 const version = "0.1.0"
 
-const org = "fullstory"
-
 func Router(asset http.Handler) http.Handler {
 
 	r := mux.NewRouter()

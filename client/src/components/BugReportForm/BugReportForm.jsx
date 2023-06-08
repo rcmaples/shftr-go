@@ -38,10 +38,10 @@ export const BugReportForm = ({ TransitionProps, placement, onClickAway }) => {
   const [selectOpen, setSelectOpen] = useState(false);
   const [sessionUrl, setSessionUrl] = useState('');
 
-  useEffect(() => {
-    const url = FullStory.getCurrentSessionURL(true);
-    setSessionUrl(url);
-  }, []);
+  // useEffect(() => {
+  //   const url = FullStory.getCurrentSessionURL(true);
+  //   setSessionUrl(url);
+  // }, []);
 
   const createIssue = async (
     { title, priority, description },

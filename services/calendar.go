@@ -11,8 +11,7 @@ import (
 
 var calSvc *calendar.Service
 
-// const ShftrCal = "c_scvkfhjpjj8bghufa29e0r0mkg@group.calendar.google.com" // prod cal
-const ShftrCal = "c_pm9slisjd0sn0ajkqt2n6g500c@group.calendar.google.com" // testing cal
+const ShftrCal = "c_pm9slisjd0sn0ajkqt2n6g500c@group.calendar.google.com"
 
 func init() {
 	logger.Println("♻️  initializaing calendar client...")
@@ -25,7 +24,7 @@ func createCalService() *calendar.Service {
 	ts, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: "shftr-go-sa@shftr-323518.iam.gserviceaccount.com",
 		Scopes:          []string{calendar.CalendarEventsScope, calendar.CalendarScope},
-		Subject: "rc@rcmaples.io", // Have to impersonate a real user to send invites.
+		Subject:         "rc@rcmaples.io", // Have to impersonate a real user to send invites.
 	})
 
 	if err != nil {
