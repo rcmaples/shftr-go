@@ -7,10 +7,15 @@ import (
 	"shftr/helpers"
 	"shftr/models"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
 func createAppointments(w http.ResponseWriter, r *http.Request) {
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
+
 	var reqBody models.CreateAppointmentPayload
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
@@ -26,13 +31,14 @@ func createAppointments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = responseJson(w, http.StatusOK, out, "appointment"); err != nil {
-		helpers.Logger.Printf("error writting json response: %v\n", err)
-		return
-	}
+	responseJson(w, http.StatusOK, out, "appointment")
 }
 
 func listAppointments(w http.ResponseWriter, r *http.Request) {
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
+
 	out, err := helpers.GetAllAppointments(org)
 	if err != nil {
 		helpers.Logger.Println("error geting all appointments: ", err)
@@ -102,7 +108,6 @@ func updateAppointment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
 
 func deleteAppointment(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)

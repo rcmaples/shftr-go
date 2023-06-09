@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"crypto/rand"
+	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -40,16 +41,25 @@ func oauthGoogleLogin(w http.ResponseWriter, r *http.Request) {
 
 func generateStateOauthCookie(w http.ResponseWriter) string {
 	var exp = time.Now().Add(7 * 24 * time.Hour)
+
 	b := make([]byte, 16)
 	rand.Read(b)
 	state := b64.URLEncoding.EncodeToString(b)
 	cookie := http.Cookie{Name: "auth", Value: state, Expires: exp}
 	http.SetCookie(w, &cookie)
+
 	return state
 }
 
 func oauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	helpers.Logger.Println("calling back...")
+
+	// env := flag.Lookup("env").Value.String()
+	// var clientUrl string
+	// clientUrl = os.Getenv("CLIENT_URL_DEV")
+	// if env != "dev" {
+	// 	clientUrl = os.Getenv("CLIENT_URL_PROD")
+	// }
+
 	oauthState, _ := r.Cookie("auth")
 
 	if r.FormValue("state") != oauthState.Value {
@@ -73,7 +83,6 @@ func oauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	tokCookie, _ := cookieMaker(authedUser)
 	w.Header().Add("Access-Control-Expose-Headers", "Set-Cookie")
 	http.SetCookie(w, &tokCookie)
-	helpers.Logger.Printf("w:\n%+v\n", w.Header())
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
@@ -223,7 +232,14 @@ func cookieMaker(user models.ShftrUser) (http.Cookie, string) {
 		helpers.Logger.Println("error signing token: ", err)
 	}
 
-	cookie := http.Cookie{Name: "token", Value: stok, Expires: time.Now().AddDate(0, 0, 7)}
+	cookie := http.Cookie{
+		Name:     "token",
+		Value:    stok,
+		Domain:   domain,
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+	}
 
 	return cookie, stok
 }

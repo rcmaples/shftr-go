@@ -42,7 +42,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // JSON Writer for errors
-func errorJson(w http.ResponseWriter, err error, status ...int){
+func errorJson(w http.ResponseWriter, err error, status ...int) {
 	statusCode := http.StatusBadRequest
 
 	if len(status) > 0 {
@@ -51,12 +51,12 @@ func errorJson(w http.ResponseWriter, err error, status ...int){
 
 	type jsonError struct {
 		Message string `json:"message"`
-		Code int `json:"status_code"`
+		Code    int    `json:"status_code"`
 	}
 
 	e := jsonError{
 		Message: err.Error(),
-		Code: statusCode,
+		Code:    statusCode,
 	}
 
 	responseJson(w, statusCode, e, "error")
@@ -86,5 +86,5 @@ func InternalServerError(w http.ResponseWriter) {
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	err := errors.New("404 - not found")
-	errorJson(w, err, http.StatusNotFound )
+	errorJson(w, err, http.StatusNotFound)
 }

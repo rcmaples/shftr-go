@@ -8,10 +8,14 @@ import (
 	"shftr/models"
 
 	"cloud.google.com/go/datastore"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
 func saveAgents(w http.ResponseWriter, r *http.Request) {
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
 	agents, err := helpers.SyncAllAgents(org)
 	if err != nil {
 		helpers.Logger.Println("error syncing agents: ", err)
@@ -74,6 +78,10 @@ func findAgentByStatus(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	status := params["status"]
 
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
+
 	if status == "" {
 		helpers.Logger.Println("invalid status parameter")
 		err := fmt.Errorf("invalid status parameter")
@@ -87,22 +95,10 @@ func findAgentByStatus(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, err)
 	}
 
-	if err = responseJson(w, http.StatusOK, out, "agents"); err != nil {
+	err = responseJson(w, http.StatusOK, out, "agents")
+	if err != nil {
 		helpers.Logger.Println("error writing response: ", err)
 		errorJson(w, err, http.StatusBadRequest)
-	}
-}
-
-func listAgents(w http.ResponseWriter, r *http.Request) {
-	out, err := helpers.GetAllAgents(org)
-	if err != nil {
-		helpers.Logger.Printf("❌ error getting all agents: %v\n", err)
-		errorJson(w, err)
-	}
-
-	if err = responseJson(w, http.StatusOK, out, "agents"); err != nil {
-		helpers.Logger.Printf("❌ error writing response: %v\n", err)
-		errorJson(w, err)
 	}
 }
 

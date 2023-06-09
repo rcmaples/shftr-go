@@ -5,9 +5,15 @@ import (
 	"net/http"
 	"shftr/helpers"
 	"shftr/models"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func listRecords(w http.ResponseWriter, r *http.Request) {
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
+
 	out, err := helpers.GetHistoricalRecords(org)
 	if err != nil {
 		helpers.Logger.Printf("error getting historical records: %v", err)
@@ -23,6 +29,10 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, err, http.StatusBadRequest)
 		return
 	}
+
+	jwtContext := r.Context().Value(contextKey("user")).(jwt.MapClaims)
+	user := helpers.UnmarshalToken(jwtContext)
+	org := user.Org
 
 	if err := helpers.TicketHandler(reqBody, org); err != nil {
 		helpers.Logger.Printf("error assigning the ticket: %v", err)

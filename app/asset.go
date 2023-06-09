@@ -16,7 +16,7 @@ type assetHandler struct {
 
 func (h *assetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	req := path.Clean(r.URL.Path)
-	p:= filepath.Join(h.webroot, path.Clean(r.URL.Path))
+	p := filepath.Join(h.webroot, path.Clean(r.URL.Path))
 
 	if strings.HasPrefix(req, "/static") {
 		if info, err := os.Stat(p); err != nil || info.IsDir() {
