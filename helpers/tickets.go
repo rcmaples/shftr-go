@@ -172,8 +172,8 @@ func assignTicket(agent models.Agent, ticket models.WebhookPayload, cfg models.Z
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-	  fmt.Println(err)
-	  return err
+		fmt.Println(err)
+		return err
 	}
 	fmt.Println(string(body))
 
@@ -182,13 +182,13 @@ func assignTicket(agent models.Agent, ticket models.WebhookPayload, cfg models.Z
 
 	Logger.Println("logging ticket in datastore...")
 	record := models.AssignmentRecord{
-		AssignedAt: time.Now(),
-		Email: agent.Email,
-		GroupName: ticket.GroupName,
-		Name: agent.Name,
-		Org: agent.Org,
-		TicketId: ticket.TicketId,
-		TicketUrl: ticket.TicketUrl,
+		AssignedAt:    time.Now(),
+		Email:         agent.Email,
+		GroupName:     ticket.GroupName,
+		Name:          agent.Name,
+		Org:           agent.Org,
+		TicketId:      ticket.TicketId,
+		TicketUrl:     ticket.TicketUrl,
 		ZendeskUserId: agent.ZendeskId,
 	}
 
@@ -214,7 +214,6 @@ func logTicket(rec models.AssignmentRecord) error {
 	Logger.Println("ticket logged.")
 	return nil
 }
-
 
 func addToOfflineQueue(payload models.WebhookPayload, org string) error {
 	Logger.Printf("attempting to add ticket %s to the offline queue...", payload.TicketId)
@@ -279,7 +278,7 @@ func EmptyOfflineQueue() error {
 	for _, ticket := range tickets {
 		org := ticket.Org
 		var payload = models.WebhookPayload{
-			TicketId: ticket.TicketId,
+			TicketId:  ticket.TicketId,
 			GroupName: ticket.GroupName,
 		}
 

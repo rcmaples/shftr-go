@@ -66,7 +66,7 @@ func GoogleHelper(gu models.GoogleUser) (models.ShftrUser, error) {
 	incompleteKey := datastore.IncompleteKey("Users", nil)
 	entityKey, err := dsClient.Put(ctx, incompleteKey, &su)
 	if err != nil {
-		Logger.Println("error creating new user: ",err)
+		Logger.Println("error creating new user: ", err)
 		return models.ShftrUser{}, err
 	}
 

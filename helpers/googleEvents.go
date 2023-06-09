@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"shftr/models"
 	"shftr/services"
-	"strings"
 	"time"
 
 	"cloud.google.com/go/datastore"
@@ -34,59 +33,20 @@ func createGoogleEvent(evt models.Appointment) (*calendar.Event, error) {
 	startDate := evt.StartDate.Format(time.RFC3339)
 	endDate := evt.EndDate.Format(time.RFC3339)
 
-	event := &calendar.Event{}
-	if evt.RRule == "" {
-		event = &calendar.Event{
-			Summary: evt.Title,
-			Start: &calendar.EventDateTime{
-				DateTime: startDate,
-				TimeZone: "Etc/UTC",
-			},
-			End: &calendar.EventDateTime{
-				DateTime: endDate,
-				TimeZone: "Etc/UTC",
-			},
-			Attendees: []*calendar.EventAttendee{
-				{Email: agent.Email},
-			},
-		}
-	} else {
-		// the client-side scheduler component creates invalid RRULEs in certain scenarios.
-		// we fix that here
-		if !strings.Contains(evt.RRule, "RRULE:") {
-			rrule := fmt.Sprintf("RRULE:%v", evt.RRule)
-			event = &calendar.Event{
-				Summary: evt.Title,
-				Start: &calendar.EventDateTime{
-					DateTime: startDate,
-					TimeZone: "Etc/UTC",
-				},
-				End: &calendar.EventDateTime{
-					DateTime: endDate,
-					TimeZone: "Etc/UTC",
-				},
-				Recurrence: []string{rrule},
-				Attendees: []*calendar.EventAttendee{
-					{Email: agent.Email},
-				},
-			}
-		} else {
-			event = &calendar.Event{
-				Summary: evt.Title,
-				Start: &calendar.EventDateTime{
-					DateTime: startDate,
-					TimeZone: "Etc/UTC",
-				},
-				End: &calendar.EventDateTime{
-					DateTime: endDate,
-					TimeZone: "Etc/UTC",
-				},
-				Recurrence: []string{evt.RRule},
-				Attendees: []*calendar.EventAttendee{
-					{Email: agent.Email},
-				},
-			}
-		}
+	event := &calendar.Event{
+		Summary: evt.Title,
+		Start: &calendar.EventDateTime{
+			DateTime: startDate,
+			TimeZone: "Etc/UTC",
+		},
+		End: &calendar.EventDateTime{
+			DateTime: endDate,
+			TimeZone: "Etc/UTC",
+		},
+		Recurrence: []string{evt.RRule},
+		Attendees: []*calendar.EventAttendee{
+			{Email: agent.Email},
+		},
 	}
 
 	out, err := gCalSvc.Events.Insert(calId, event).Do()
@@ -132,12 +92,7 @@ func modifyGoogleEvent(evt models.Appointment) error {
 
 	var rSlice []string
 	if evt.RRule != "" {
-		if !strings.Contains(evt.RRule, "RRULE:") {
-			rrule := fmt.Sprintf("RRULE:%s", evt.RRule)
-			rSlice = append(rSlice, rrule)
-		} else {
-			rSlice = append(rSlice, evt.RRule)
-		}
+		rSlice = append(rSlice, evt.RRule)
 	}
 	if evt.ExDate != "" {
 		exDate := fmt.Sprintf("EXDATE;VALUE=DATE:%s", evt.ExDate)

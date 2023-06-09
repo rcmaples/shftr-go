@@ -53,7 +53,7 @@ func isOnline() []string {
 	for _, appt := range activeAppts {
 		duration := appt.EndDate.Sub(appt.StartDate)
 
-		var apptRule *rrule.Set
+		var apptRule *rrule.RRule
 		var latestShiftStart time.Time
 		var shiftEnd time.Time
 		excluded := false
@@ -93,20 +93,13 @@ func isOnline() []string {
 		} else {
 			if strings.Contains(appt.RRule, "RRULE:") {
 				ruleString := fmt.Sprintf("DTSTART:%s\n%s", startStr, appt.RRule)
-				apptRule, err = rrule.StrToRRuleSet(ruleString)
-				if err != nil {
-					Logger.Println("Err: ", err)
-				}
-				latestShiftStart = apptRule.Before(now, true)
+				apptRule, _ = rrule.StrToRRule(ruleString)
 			} else if !strings.Contains(appt.RRule, "RRULE:") {
 				ruleString := fmt.Sprintf("DSTART:%s\nRRULE:%s", startStr, apptRule)
-				apptRule, err = rrule.StrToRRuleSet(ruleString)
-				if err != nil {
-					Logger.Println("Err: ", err)
-				}
+				apptRule, _ = rrule.StrToRRule(ruleString)
 			}
-		latestShiftStart = apptRule.Before(now, true)
-		shiftEnd = latestShiftStart.Add(duration)
+			latestShiftStart = apptRule.Before(now, true)
+			shiftEnd = latestShiftStart.Add(duration)
 		}
 		if latestShiftStart.Before(now) && now.Before(shiftEnd) && !excluded {
 			onlineIds = append(onlineIds, appt.Agent)

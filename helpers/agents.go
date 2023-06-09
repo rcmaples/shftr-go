@@ -157,30 +157,6 @@ func GetActiveAgents(org string, status string) ([]models.Agent, error) {
 	return out, nil
 }
 
-func GetAllAgents(org string) ([]models.Agent, error) {
-	Logger.Println("🔍 retrieving all agents...")
-	var out []models.Agent
-	ctx := context.Background()
-	dsClient := services.GetDB()
-	q := datastore.NewQuery(Agents).Filter("Org =", org)
-	it := dsClient.Run(ctx, q)
-	for {
-		var agent models.Agent
-		_, err := it.Next(&agent)
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			Logger.Println("error fetching next agent: ", err)
-			return nil, err
-		}
-		out = append(out, agent)
-	}
-
-	return out, nil
-
-}
-
 func UpdateAgentQueueShare(key *datastore.Key, updates models.QueueSharePayload) (models.Agent, error) {
 	ctx := context.Background()
 	dsClient := services.GetDB()
