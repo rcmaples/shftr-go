@@ -16,7 +16,6 @@ import (
 	"github.com/stephenafamo/kronika"
 )
 
-// var flgWebpack = flag.String("webpack", "http://127.0.0.1:3001", "Upstream webpack server for debug mode. If debug mode is disabled, the assets are provided from local filesystem.")
 var flgWebpack = flag.String("webpack", "http://127.0.0.1:3000", "Upstream webpack server for debug mode. If debug mode is disabled, the assets are provided from local filesystem.")
 var flgWebroot = flag.String("webroot", "./client/build", "Path to asset root directory for production mode. If debug mode is enabled, the assets are provided via webpack debug server.")
 var flgPort = flag.Int("port", 4000, "Server port to listen on")
@@ -68,8 +67,8 @@ func main() {
 		}
 		interval := time.Minute * 15
 		for t := range kronika.Every(ctx, start, interval) {
-			helpers.SetOnline()
 			helpers.Logger.Println("⏲  checking offline queue...")
+			helpers.SetOnline()
 			if err := helpers.EmptyOfflineQueue(); err != nil {
 				helpers.Logger.Println("error emptying offline queue: ", err, t.Format("2006-01-02 15:04:00"))
 			}

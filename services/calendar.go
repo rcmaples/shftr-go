@@ -11,7 +11,7 @@ import (
 
 var calSvc *calendar.Service
 
-const ShftrCal = "c_pm9slisjd0sn0ajkqt2n6g500c@group.calendar.google.com"
+const ShftrCal = "c_pm9slisjd0sn0ajkqt2n6g500c@group.calendar.google.com" // testing cal
 
 func init() {
 	logger.Println("♻️  initializaing calendar client...")
