@@ -15,6 +15,14 @@ import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 
 // Inspiration: https://codesandbox.io/s/material-ui-editable-tables-forked-29csr?file=/src/index.js:1794-1845
 
+let API_URL = '';
+
+if (process.env.NODE_ENV === 'development') {
+  API_URL = require('../../config/config').API_URL;
+} else {
+  API_URL = `https://shftr-api.herokuapp.com`;
+}
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -78,6 +86,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 const RulesTable = () => {
+  const { jwtToken } = localStorage;
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   // const [previous, setPrevious] = React.useState({});

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as FullStory from '@fullstory/browser';
+import jwt_decode from 'jwt-decode';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,6 +15,14 @@ import TableToolbar from '../../components/TableToolbar/TableToolbar';
 import AgentTableHeader from './AgentTableHeader';
 import AgentTableFooter from '../../components/AgentTableFooter/AgentTableFooter';
 import { Event, InsertComment } from '@material-ui/icons';
+
+let API_URL = '';
+
+if (process.env.NODE_ENV === 'development') {
+  API_URL = require('../../config/config').API_URL;
+} else {
+  API_URL = `https://shftr-api.herokuapp.com`;
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -76,6 +84,19 @@ function updateArray(arr, obj) {
   }
 }
 
+function findToken() {
+  let cookieToken;
+  if (document.cookie.indexOf('token=') !== -1) {
+    cookieToken = document.cookie
+      .split('; ')
+      .find(cookie => cookie.startsWith('token'))
+      .split('=')[1];
+  } else {
+    cookieToken = null;
+  }
+  return cookieToken;
+}
+
 const AgentTable = () => {
   const classes = useStyles();
   const [order, setOrder] = useState('desc');
@@ -86,12 +107,12 @@ const AgentTable = () => {
   // const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    // let cookieToken = findToken();
-    // if (cookieToken) {
-    //   let decodedUser = jwt_decode(cookieToken);
-    //   let { key, name, email, org } = decodedUser;
-    //   setCurrentUser({ key, name, email, org });
-    // }
+    let cookieToken = findToken();
+    if (cookieToken) {
+      let decodedUser = jwt_decode(cookieToken);
+      let { key, name, email, org } = decodedUser;
+      setCurrentUser({ key, name, email, org });
+    }
 
     let options = {
       method: 'GET',
@@ -170,15 +191,6 @@ const AgentTable = () => {
     if (paused == false) {
       action = 'Unpaused Agent';
     }
-
-    // TODO: REIMPLEMENT FS.EVENT
-    // FullStory.event(action, {
-    //   currentUserName_str: currentUser.name,
-    //   currentUserEmail_str: currentUser.email,
-    //   modifiedAgentId_str: id,
-    //   modifiedAgentName: name,
-    //   modifiedAgentZendeskGroup_str: defaultZendeskGroupName,
-    // });
 
     let theUpdate = {
       key,

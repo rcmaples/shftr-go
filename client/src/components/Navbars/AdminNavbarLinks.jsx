@@ -14,6 +14,9 @@ import { NavBarButton } from './NavBarButton';
 import { NavBarLogoutMenu } from './NavBarLogoutMenu';
 import { BugReportForm } from '../BugReportForm/BugReportForm';
 
+// actions
+import { logoutUser } from '../../actions/authActions';
+
 export const AdminNavbarLinks = () => {
   const classes = useStyles();
   const [profileMenuOpen, setProfileMenuOpen] = useState(null);
@@ -44,10 +47,10 @@ export const AdminNavbarLinks = () => {
     }
   };
 
-  // const handleLogout = () => {
-  //   onClickAway();
-  //   logoutUser();
-  // };
+  const handleLogout = () => {
+    onClickAway();
+    logoutUser();
+  };
 
   return (
     <div>
@@ -81,6 +84,19 @@ export const AdminNavbarLinks = () => {
           ariaOwns={profileMenuOpen ? 'profile-menu-list-grow' : null}
           ariaPopup='true'
         />
+        <Popper
+          open={!!profileMenuOpen}
+          anchorEl={profileMenuOpen}
+          transition
+          disablePortal
+          className={
+            classNames({ [classes.popperClose]: !profileMenuOpen }) +
+            ' ' +
+            classes.popperNav
+          }
+        >
+          <NavBarLogoutMenu onClickAway={onClickAway} onClick={handleLogout} />
+        </Popper>
       </div>
     </div>
   );

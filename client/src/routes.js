@@ -1,25 +1,25 @@
 // @material-ui/icons
-// import LoginIcon from '@material-ui/icons/LockOpen';
+import LoginIcon from '@material-ui/icons/LockOpen';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-// import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@material-ui/icons/Settings';
 import TuneIcon from '@material-ui/icons/Tune';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PeopleIcon from '@material-ui/icons/People';
 
 // core components/views for Admin layout
 import AgentsPage from './views/Agents/AgentsPage';
-// import DashboardPage from './views/Dashboard/Dashboard';
+import DashboardPage from './views/Dashboard/Dashboard';
 import RulesPage from './views/Rules/RulesPage';
 import HistoryPage from './views/History/HistoryPage';
-// import QueuesPage from './views/Queues/QueuesPage';
+import QueuesPage from './views/Queues/QueuesPage';
 import SchedulerContainer from './views/Scheduler/Scheduler';
-// import Settings from './views/Settings/Settings';
-// import Reports from './views/Reports/Reports';
-// import TagsPage from './views/Tags/TagsPage';
-// import UserProfile from './views/UserProfile/UserProfile';
+import Settings from './views/Settings/Settings';
+import Reports from './views/Reports/Reports';
+import TagsPage from './views/Tags/TagsPage';
+import UserProfile from './views/UserProfile/UserProfile';
 
 // code components/views for Auth layout
-// import LoginPage from './views/Pages/LoginPage';
+import LoginPage from './views/Pages/LoginPage';
 
 const dashboardRoutes = [
   // {
@@ -78,13 +78,20 @@ const dashboardRoutes = [
   //   component: Reports,
   //   layout: '/admin',
   // },
-  // {
-  //   path: '/settings',
-  //   name: 'Settings',
-  //   icon: SettingsIcon,
-  //   component: Settings,
-  //   layout: '/admin',
-  // },
+    {
+      path: '/settings',
+      name: 'Settings',
+      icon: SettingsIcon,
+      component: Settings,
+      layout: '/admin',
+    },
+    {
+      path: '/login-page',
+      name: 'Login',
+      icon: LoginIcon,
+      component: LoginPage,
+      layout: '/auth',
+    },
 ];
 
 export default dashboardRoutes;

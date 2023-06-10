@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
+// let API_URL = '';
 
 /**
  * DEPRECATED FOR NOW
  * ALL SETTINGS FOR ZENDESK CONNECTION STORED ON BACKEND
  *  KTHXBYEEE
+ * if (process.env.NODE_ENV === 'development') {
+ * API_URL = require('../../config/config').API_URL;
+ * } else {
+ * API_URL = `https://shftr-api.herokuapp.com`;
+ * }
  */
 
 // @material-ui/core components
@@ -23,6 +29,8 @@ import Card from '../../components/Card/Card';
 import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
+
+const { jwtToken } = localStorage;
 
 const styles = {
   cardCategoryWhite: {
