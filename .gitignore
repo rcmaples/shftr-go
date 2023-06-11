@@ -11,7 +11,7 @@ node_modules
 /datastore
 
 # Google Service Account Credentials
-shftr-go-sa.json
+/gcp
 
 # production
 /client/build

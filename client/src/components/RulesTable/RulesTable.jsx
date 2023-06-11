@@ -15,13 +15,13 @@ import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 
 // Inspiration: https://codesandbox.io/s/material-ui-editable-tables-forked-29csr?file=/src/index.js:1794-1845
 
-let API_URL = '';
+// let API_URL = '';
 
-if (process.env.NODE_ENV === 'development') {
-  API_URL = require('../../config/config').API_URL;
-} else {
-  API_URL = `https://shftr-api.herokuapp.com`;
-}
+// if (process.env.NODE_ENV === 'development') {
+//   API_URL = require('../../config/config').API_URL;
+// } else {
+//   API_URL = `https://shftr-api.herokuapp.com`;
+// }
 
 const useStyles = makeStyles(theme => ({
   root: {

@@ -22,7 +22,8 @@ func createCalService() *calendar.Service {
 	ctx := context.Background()
 
 	ts, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
-		TargetPrincipal: "shftr-go-sa@shftr-323518.iam.gserviceaccount.com",
+		// TargetPrincipal: "shftr-go-sa@shftr-323518.iam.gserviceaccount.com",
+		TargetPrincipal: "shftr-go-sa@go-shftr.iam.gserviceaccount.com",
 		Scopes:          []string{calendar.CalendarEventsScope, calendar.CalendarScope},
 		Subject:         "rc@rcmaples.io", // Have to impersonate a real user to send invites.
 	})

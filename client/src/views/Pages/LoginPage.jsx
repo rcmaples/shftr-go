@@ -61,11 +61,11 @@ class LoginPage extends Component {
   render() {
     const { classes } = this.props;
     let API_URL;
-    if (process.env.NODE_ENV === 'development') {
-      API_URL = require('../../config/config').API_URL;
-    } else {
-      API_URL = `https://shftr-api.herokuapp.com`;
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    // API_URL = require('../../config/config').API_URL;
+    // } else {
+    // API_URL = `https://shftr-api.herokuapp.com`;
+    // }
 
     return (
       <div className={classes.container}>

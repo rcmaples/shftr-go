@@ -4,39 +4,26 @@
 
 # shftr in go
 
-React front end is in `./client`
-
-Go backend is in `./server`
-
 Getting Started
 
 - Launch datastore:
 
-  from inside `/shftr`:
-
-    - `gcloud beta emulators datastore start --data-dir=datastore --project=go-shftr`
+  - `gcloud beta emulators datastore start --data-dir=datastore --project=go-shftr`
 
 - Launch the backend:
 
-  from inside `/shftr`:
-
-    - `go run main.go --env prod|dev`
-    - (dev looks for dev build of front end, prod looks for production build)
+  - `go run main.go --env prod|dev`
+  - (dev looks for dev build of front end, prod looks for production build)
 
 - Launch the frontend:
 
-  from inside `/shftr/client`:
+  from inside `/client`:
 
-    - `npm run start` -- build the dev version with hotreloading; port 3000 by default (conflicts with datastore gui)
-
-    - `npm run build` -- builds the front end for the shftr backend to serve staticly
+  - `npm run start` -- build the dev version with hotreloading; port 3000 by default (conflicts with datastore gui)
+  - `npm run build` -- builds the front end for the shftr backend to serve staticly
 
 - datastore emulator gui:
-
-  from **outside** of `/shftr`:
-
-    - `google-cloud-gui --port 3000` (requires google-cloud-gui to be installed via `npm i -g`)
-
+  - `google-cloud-gui --port 3000` (requires google-cloud-gui to be installed via `npm i -g`)
 
 ---
 
@@ -54,4 +41,3 @@ Getting Started
 ### React dependencies:
 
 - more to come.
-
