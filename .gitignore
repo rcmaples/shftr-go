@@ -14,7 +14,7 @@ node_modules
 shftr-go-sa.json
 
 # production
-/build
+/client/build
 
 # misc
 .DS_Store
